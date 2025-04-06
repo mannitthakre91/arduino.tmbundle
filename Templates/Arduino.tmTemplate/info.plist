@@ -1,19 +1,91 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>command</key>
-	<string>if [[ ! -f "$TM_NEW_FILE" ]]; then
-   TM_YEAR=`date +%Y` \
-   TM_DATE=`date +%Y-%m-%d` \
-   perl -pe 's/\$\{([^}]*)\}/$ENV{$1}/g' \
-      &lt; sketch.ino &gt; "$TM_NEW_FILE"
-fi</string>
-	<key>extension</key>
-	<string>ino</string>
-	<key>name</key>
-	<string>Basic Sketch</string>
-	<key>uuid</key>
-	<string>1E20D9D4-3FD4-457E-8FD6-808A7CEF04D1</string>
-</dict>
-</plist>
+   Stop();
+    backward();
+    delay(100);
+    Stop();
+    L = leftsee();
+    servo.write(spoint);
+    delay(800);
+    R = rightsee();
+    servo.write(spoint);
+    if (L < R) {
+      turnleft();
+      delay(500);
+      Stop();
+      delay(200);
+    } else if (L > R) {
+      turnright();
+      delay(500);
+      Stop();
+      delay(200);
+    }
+  } else {
+    forward();
+  }
+}
+
+void forward() {
+  M1.run(FORWARD);
+  M2.run(FORWARD);
+  M3.run(FORWARD);
+  M4.run(FORWARD);
+}
+void backward() {
+  M1.run(BACKWARD);
+  M2.run(BACKWARD);
+  M3.run(BACKWARD);
+  M4.run(BACKWARD);
+}
+void turnleft() {
+  M1.run(BACKWARD);
+  M2.run(BACKWARD);
+  M3.run(FORWARD);
+  M4.run(FORWARD);
+}
+void turnright() {
+  M1.run(FORWARD);
+  M2.run(FORWARD);
+  M3.run(BACKWARD);
+  M4.run(BACKWARD);
+}
+void Stop() {
+  M1.run(RELEASE);
+  M2.run(RELEASE);
+  M3.run(RELEASE);
+  M4.run(RELEASE);
+}
+int leftsee() {
+  servo.write(20);
+  delay(800);
+  Left = ultrasonic();
+  return Left;
+}
+
+int rightsee() {
+  servo.write(150);
+  delay(800);
+  Right = ultrasonic();
+  return Right;
+}
+
+int ultrasonic() {
+  digitalWrite(Trig, LOW);
+  delayMicroseconds(4);
+  digitalWrite(Trig, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(Trig, LOW);
+  long t = pulseIn(Echo, HIGH);
+  long cm = t / 29 / 2; //time convert distance
+  return cm;
+}
+void start() {
+  delay(3000);
+  for (int a = 0; a < 4; a++) {
+    servo.write(spoint);
+    delay(50);
+    servo.write(40);
+    delay(50);
+    servo.write(90);
+    delay(50);
+    servo.write(spoint);
+  }
+}
